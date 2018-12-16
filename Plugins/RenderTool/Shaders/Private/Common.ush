@@ -1,0 +1,11 @@
+struct VSInput
+{
+    float4 Position : ATTRIBUTE0;
+    float2 UV : ATTRIBUTE1;
+};
+
+struct VS2PS
+{
+    float4 Position : SV_POSITION;
+    float2 Coord : TEXCOORD0;
+};

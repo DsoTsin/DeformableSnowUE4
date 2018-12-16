@@ -1,0 +1,31 @@
+#include "Common.ush"
+
+Texture2D       InputTex;
+float4          InvInputSize;
+SamplerState    InputSampler;
+
+void MainPS(in VS2PS Input, out float4 OutColor : SV_Target0)
+{
+    float weights[9] =
+    {
+        1.0f / 16.0f,   1.0f / 8.0f,    1.0f / 16.0f,
+        1.0f / 8.0f,    1.0f / 4.0f,    1.0f / 8.0f,
+        1.0f / 16.0f,   1.0f / 8.0f,    1.0f / 16.0f,
+    };
+    float2 offsets[9] =
+    {
+        float2(-1.0, 1.0),  float2(0.0, 1.0),   float2(1.0, 1.0),
+        float2(-1.0, 0.0),  float2(0.0, 0.0),   float2(1.0, 0.0),
+        float2(-1.0, -1.0), float2(0.0, -1.0),  float2(1.0, -1.0),
+    };
+    float4 color = float4(0.0, 0.0, 0.0, 0.0);
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            float2 uv = Input.Coord + offsets[i * 3 + j] * InvInputSize.xy;
+            color += InputTex.Sample(InputSampler, uv) * weights[i * 3 + j];
+        }
+    }
+    OutColor = color;
+}

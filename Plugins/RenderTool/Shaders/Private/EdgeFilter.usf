@@ -1,0 +1,18 @@
+#include "Common.ush"
+
+Texture2D InputTex;
+SamplerState InputSampler;
+float matrixSobelX[9] = {
+    1.0, 0.0, -1.0,
+    2.0, 0.0, -2.0,
+    1.0, 0.0, -1.0
+};
+float matrixSobelY[9] = {
+   -1.0,-2.0,-1.0,
+    0.0, 0.0, 0.0,
+    1.0, 2.0, 1.0
+};
+void MainPS(VS2PS Input, float4 OutColor : SV_TARGET)
+{
+
+}

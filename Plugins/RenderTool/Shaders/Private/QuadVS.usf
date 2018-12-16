@@ -1,0 +1,7 @@
+#include "Common.ush"
+
+void MainVS(in VSInput Input, out VS2PS Output)
+{
+    Output.Position = Input.Position;
+    Output.Coord = Input.UV;
+}
