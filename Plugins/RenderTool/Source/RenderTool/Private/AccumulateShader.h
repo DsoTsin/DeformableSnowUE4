@@ -12,12 +12,7 @@ public:
     {
         InputTex.Bind(Initializer.ParameterMap, TEXT("InputTex"));
         InputSampler.Bind(Initializer.ParameterMap, TEXT("InputTexSampler"));
-        
-        InputTexLast.Bind(Initializer.ParameterMap, TEXT("InputTexLast"));
-        InputSamplerLast.Bind(Initializer.ParameterMap, TEXT("InputTexLastSampler"));
-        
-        InputSize.Bind(Initializer.ParameterMap, TEXT("InputTexSizes"));
-        InputOffset.Bind(Initializer.ParameterMap, TEXT("Offset"));
+        OffsetAndSize.Bind(Initializer.ParameterMap, TEXT("OffsetAndSize"));
     }
     FAccumulatePS() {}
     static bool ShouldCompilePermutation(const FGlobalShaderPermutationParameters& Parameters)
@@ -26,32 +21,23 @@ public:
     }
     void SetParameters(
         FRHICommandList& RHICmdList,
-        FVector4 Offset,
-        FVector4 TextureSize,
+        FVector4 InOffsetSize,
         FTextureRHIParamRef InputTexture,
-        FSamplerStateRHIParamRef& SamplerStateLinear,
-        FTextureRHIParamRef InputTextureLast,
-        FSamplerStateRHIParamRef& SamplerStateLast)
+        FSamplerStateRHIParamRef& SamplerStateLinear)
     {
         FPixelShaderRHIParamRef PixelShaderRHI = GetPixelShader();
-        SetShaderValue(RHICmdList, PixelShaderRHI, InputOffset, Offset);
-        SetShaderValue(RHICmdList, PixelShaderRHI, InputSize, TextureSize);
+        SetShaderValue(RHICmdList, PixelShaderRHI, OffsetAndSize, InOffsetSize);
         SetTextureParameter(RHICmdList, PixelShaderRHI, InputTex, InputSampler, SamplerStateLinear, InputTexture);
-        SetTextureParameter(RHICmdList, PixelShaderRHI, InputTexLast, InputSamplerLast, SamplerStateLast, InputTextureLast);
     }
     virtual bool Serialize(FArchive& Ar)
     {
         bool bShaderHasOutdatedParameters = FGlobalShader::Serialize(Ar);
-        Ar << InputTex << InputSampler << InputTexLast << InputSamplerLast << InputSize << InputOffset;
+        Ar << InputTex << InputSampler << OffsetAndSize;
         return bShaderHasOutdatedParameters;
     }
 private:
     FShaderResourceParameter    InputTex;
     FShaderResourceParameter    InputSampler;
 
-    FShaderResourceParameter    InputTexLast;
-    FShaderResourceParameter    InputSamplerLast;
-
-    FShaderParameter            InputOffset;
-    FShaderParameter            InputSize;
+    FShaderParameter            OffsetAndSize;
 };

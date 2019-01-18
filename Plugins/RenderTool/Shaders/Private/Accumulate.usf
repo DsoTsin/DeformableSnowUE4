@@ -1,29 +1,15 @@
 #include "Common.ush"
 
-float4 Offset;
+float4 OffsetAndSize;
 Texture2D InputTex;
 SamplerState InputTexSampler;
-Texture2D InputTexLast;
-SamplerState InputTexLastSampler;
 
-float4 InputTexSizes;
 static const float FarPlane = 65500.f;
 
 void MainPS(in VS2PS Input, out float4 OutColor : SV_Target0)
 {
-    float Current = InputTex.Sample(InputTexSampler, Input.Coord).r;
-    float Origin = InputTexLast.Sample(InputTexLastSampler, Input.Coord + Offset.xy).r;
-    if (Current > FarPlane && Origin > FarPlane)
-        clip(FarPlane - Current);
+    float Current = InputTex.Sample(InputTexSampler, Input.Coord + OffsetAndSize.xy * float2(-1.0, 1.0)).r;
     if (Current > FarPlane)
-    {
-        OutColor = float4(Origin, 0.0, 0.0, 1.0);
-        return;
-    }
-    if (Origin > FarPlane)
-    {
-        OutColor = float4(Current, 0.0, 0.0, 1.0);
-        return;
-    }
-    OutColor = float4(max(Current, Origin), 0.0, 0.0, 1.0);
+        clip(FarPlane - Current);
+    OutColor = float4(Current, 0.0, 0.0, 1.0);
 }

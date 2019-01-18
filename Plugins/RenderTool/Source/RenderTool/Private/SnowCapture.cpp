@@ -111,7 +111,7 @@ void ASnowCapture::Tick(float Time) {
         return;
     CheckSizeChange();
     SceneCapture->CaptureScene();
-    OnCaptureMoved();
+    //OnCaptureMoved();
     auto Offset = GetActorLocation() - LastLocation;
     Offset /= (float)SceneCapture->OrthoWidth;
     ENQUEUE_RENDER_COMMAND(SnowPass)(
@@ -132,20 +132,9 @@ void ASnowCapture::OnCaptureResized(uint32 Size) {
 void ASnowCapture::Accumulate_RenderThread(FVector4 Offset, uint32 InRenderSize) {
     check(IsInRenderingThread());
     FRHICommandListImmediate& RHICmdList = GRHICommandList.GetImmediateCommandList();
-    FPooledRenderTargetDesc OutputDesc = FPooledRenderTargetDesc::Create2DDesc(
-        FIntPoint(InRenderSize, InRenderSize),
-        CaptureRTDepth->GetFormat(),
-        FClearValueBinding::None,
-        TexCreate_None,
-        TexCreate_RenderTargetable,
-        false);
-    TRefCountPtr<IPooledRenderTarget> TempRenderTarget;
-    GetRendererModule().RenderTargetPoolFindFreeElement(
-        RHICmdList, OutputDesc, TempRenderTarget, TEXT("TempRT"));
     Accumulate(RHICmdList, 
-        AccumulatedRTDepth->GetRenderTargetResource(), 
-        CaptureRTDepth->GetRenderTargetResource(), 
-        TempRenderTarget->GetRenderTargetItem().TargetableTexture,
+        CaptureRTDepth->GetRenderTargetResource(),
+        AccumulatedRTDepth->GetRenderTargetResource(),
         Offset, FVector4(InRenderSize)
     );
 }

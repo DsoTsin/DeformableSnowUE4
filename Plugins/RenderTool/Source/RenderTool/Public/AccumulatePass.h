@@ -9,6 +9,5 @@ extern RENDERTOOL_API void
 Accumulate(
     FRHICommandList& RHICmdList,
     FTextureRenderTargetResource* InputTexture,
-    FTextureRenderTargetResource* InputTextureLast,
-    FTextureRHIRef OutputTexture,
-    FVector4 Offset, FVector4 Sizes);
+    FTextureRenderTargetResource* OutputTexture,
+    FVector4 OffsetAndSize, FVector4 Sizes);
